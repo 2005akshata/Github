@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Home chef's Restaurant</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .navbar a:hover, .navbar .active {
+            background-color: #ff9800;
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .navbar a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+        }
+        h1 {
+            color: #fff;
+            background-color: #ff9800;
+            padding: 15px;
+            text-align: center;
+            margin-top: 0;
+        }
+        .menu-container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px 25px;
+        }
+        .menu-section {
+            margin-bottom: 30px;
+        }
+        .menu-section h2 {
+            color: #ff9800;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .item-name {
+            font-weight: bold;
+        }
+        .item-price {
+            color: #ff9800;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="menu.html" class="active">Menu</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
+    <h1>Our Menu</h1>
+    <div class="menu-container">
+        <div class="menu-section">
+            <h2>Starters</h2>
+            <div class="menu-item">
+                <span class="item-name">Tomato Soup</span>
+                <span class="item-price">₹80</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Veg Spring Rolls</span>
+                <span class="item-price">₹120</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Paneer Tikka</span>
+                <span class="item-price">₹150</span>
+            </div>
+        </div>
+        <div class="menu-section">
+            <h2>Main Course</h2>
+            <div class="menu-item">
+                <span class="item-name">Butter Naan</span>
+                <span class="item-price">₹40</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Paneer Butter Masala</span>
+                <span class="item-price">₹180</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Veg Biryani</span>
+                <span class="item-price">₹160</span>
+            </div>
+        </div>
+        <div class="menu-section">
+            <h2>Desserts</h2>
+            <div class="menu-item">
+                <span class="item-name">Gulab Jamun</span>
+                <span class="item-price">₹60</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Ice Cream</span>
+                <span class="item-price">₹70</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
