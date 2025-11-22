@@ -36,7 +36,7 @@
             }
         }
         .order-details-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 40px auto;
             background: #fff;
             border-radius: 10px;
@@ -51,10 +51,18 @@
             margin-top: 0;
             border-radius: 8px 8px 0 0;
         }
+        .details-list {
+            margin: 20px 0 30px 0;
+            font-size: 17px;
+            color: #444;
+        }
+        .details-list strong {
+            color: #ff9800;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px;
+            margin-top: 10px;
         }
         th, td {
             padding: 12px 10px;
@@ -95,6 +103,15 @@
     </div>
     <div class="order-details-container">
         <h1>Order Details</h1>
+        <div class="details-list">
+            <div><strong>Order Number:</strong> #1024</div>
+            <div><strong>Date:</strong> November 22, 2025</div>
+            <div><strong>Customer Name:</strong> Akshata G</div>
+            <div><strong>Contact:</strong> +91 98765 43210</div>
+            <div><strong>Delivery Address:</strong> 123, Main Road, Bengaluru, Karnataka, India</div>
+            <div><strong>Payment Method:</strong> Cash on Delivery</div>
+            <div><strong>Status:</strong> <span style="color: #207520; font-weight:bold;">Order Received</span></div>
+        </div>
         <table>
             <tr>
                 <th>Item</th>
