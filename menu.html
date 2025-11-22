@@ -289,30 +289,21 @@
     </div>
     <script>
         function placeOrder() {
-            // Gather selected items
             const checkboxes = document.querySelectorAll('.select-item:checked');
             if (checkboxes.length === 0) {
                 alert('Please select at least one item to place your order.');
                 return;
             }
-            let orderHTML = '<ul>';
-            let total = 0;
+            let order = [];
             checkboxes.forEach(cb => {
-                const name = cb.value;
-                const img = cb.getAttribute('data-img');
-                const price = parseInt(cb.getAttribute('data-price'));
-                total += price;
-                orderHTML += `<li>
-                    <img src="${img}" alt="${name}">
-                    <span class="item-name">${name}</span>
-                    <span class="item-price">₹${price}</span>
-                </li>`;
+                order.push({
+                    name: cb.value,
+                    img: cb.getAttribute('data-img'),
+                    price: cb.getAttribute('data-price')
+                });
             });
-            orderHTML += '</ul>';
-            orderHTML += `<div class="total">Total: ₹${total}</div>`;
-            document.getElementById('orderDetails').innerHTML = orderHTML;
-            document.getElementById('menuContainer').style.display = 'none';
-            document.getElementById('orderMessage').style.display = 'block';
+            localStorage.setItem('lastOrder', JSON.stringify(order));
+            window.location.href = "order-details.html";
         }
     </script>
 </body>

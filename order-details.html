@@ -125,15 +125,16 @@
             <div><strong>Payment Method:</strong> Cash on Delivery</div>
             <div><strong>Status:</strong> <span style="color: #207520; font-weight:bold;">Order Received</span></div>
         </div>
+        <h2>Your Order</h2>
         <table>
             <tr>
                 <th>Item</th>
                 <th>Image</th>
-                <th>Quantity</th>
                 <th>Price</th>
-                <th>Subtotal</th>
             </tr>
-            
+            <tbody id="orderTable"></tbody>
+        </table>
+        <table>
             <tr class="total-row">
                 <td colspan="4" style="text-align:right;">Total</td>
                 <td>₹580</td>
@@ -158,6 +159,32 @@ function placeOrder() {
     localStorage.setItem('lastOrder', JSON.stringify(order));
     window.location.href = "order-details.html";
 }
+
+window.onload = function() {
+    const order = JSON.parse(localStorage.getItem('lastOrder') || '[]');
+    let table = document.getElementById('orderTable');
+    let total = 0;
+    if(order.length === 0) {
+        table.innerHTML = '<tr><td colspan="3">No order placed.</td></tr>';
+    } else {
+        order.forEach(item => {
+            total += parseInt(item.price);
+            table.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td><img src="${item.img}" alt="${item.name}" style="width:40px;height:40px;border-radius:6px;"></td>
+                    <td>₹${item.price}</td>
+                </tr>
+            `;
+        });
+        table.innerHTML += `
+            <tr style="font-weight:bold;">
+                <td colspan="2" style="text-align:right;">Total</td>
+                <td>₹${total}</td>
+            </tr>
+        `;
+    }
+};
 </script>
 </body>
 </html>
