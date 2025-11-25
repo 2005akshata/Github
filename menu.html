@@ -20,14 +20,24 @@
         .item-img{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-right:18px;border:1px solid #ddd;background:#fafafa}
         .item-name{font-weight:bold;font-size:17px}
         .item-price{color:#ff9800;font-weight:bold;margin-left:18px;min-width:60px;text-align:right}
-        .select-item{margin-left:18px;transform:scale(1.3);accent-color:#ff9800}
-        .item-qty{width:56px;padding:6px;border-radius:6px;border:1px solid #ddd;text-align:center;margin-left:12px}
+        .select-item{margin-left:18px;transform:scale(1.2);accent-color:#ff9800}
+        .item-qty{width:56px;padding:6px;border-radius:6px;border:1px solid #ddd;text-align:center;margin-left:8px}
         .checkout-section{text-align:right;margin-top:30px}
         .checkout-btn{background:#ff9800;color:#fff;border:none;padding:12px 28px;border-radius:5px;font-size:17px;cursor:pointer;transition:background .2s}
         .checkout-btn:hover{background:#e65100}
         .order-message{display:none;margin:30px auto 0 auto;max-width:500px;background:#e0ffe0;color:#207520;border:1px solid #b2ffb2;border-radius:8px;padding:25px 20px;font-size:18px;text-align:center;font-weight:bold;animation:fadeIn .8s}
         @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        @media (max-width:600px){.menu-item{flex-direction:column;align-items:flex-start}.item-info{margin-bottom:8px}.item-price,.select-item{margin-left:0}.checkout-section{text-align:center}}
+
+        /* Checkout modal */
+        .modal {display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;overflow:auto;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
+        .modal-content{background:#fff;padding:20px;border-radius:10px;max-width:520px;width:94%}
+        .form-row{display:flex;gap:10px;margin-bottom:12px}
+        .form-row input,.form-row select,.form-row textarea{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd}
+        .modal .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+        .btn{background:#ff9800;color:#fff;border:none;padding:10px 16px;border-radius:6px;cursor:pointer}
+        .btn.secondary{background:#ddd;color:#333}
+
+        @media (max-width:600px){.menu-item{flex-direction:column;align-items:flex-start}.item-info{margin-bottom:8px}.item-price,.select-item{margin-left:0}.checkout-section{text-align:center}.form-row{flex-direction:column}}
     </style>
 </head>
 <body>
@@ -143,15 +153,41 @@
             </div>
 
             <div class="checkout-section">
-                <button type="button" class="checkout-btn" onclick="placeOrder()">Checkout</button>
+                <button type="button" class="checkout-btn" onclick="showCheckout()">Checkout</button>
             </div>
         </form>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Checkout - Enter Details</h3>
+            <div class="form-row">
+                <input id="custName" placeholder="Full name" type="text" required>
+                <input id="custPhone" placeholder="Phone number" type="tel" required>
+            </div>
+            <div class="form-row">
+                <textarea id="custAddress" placeholder="Delivery address" rows="3" required></textarea>
+            </div>
+            <div class="form-row">
+                <select id="paymentMethod">
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Card">Card</option>
+                </select>
+                <input id="deliveryTip" type="number" min="0" value="0" placeholder="Delivery tip (₹)">
+            </div>
+            <div class="modal-actions">
+                <button class="btn secondary" onclick="hideCheckout()">Cancel</button>
+                <button class="btn" onclick="placeOrder()">Place Order</button>
+            </div>
+        </div>
     </div>
 
     <div class="order-message" id="orderMessage"></div>
 
     <script>
-        // Toggle qty input when checkbox is changed
+        // Toggle qty input when checkbox changes
         document.querySelectorAll('.select-item').forEach(cb => {
             cb.addEventListener('change', function() {
                 const qty = this.closest('.menu-item').querySelector('.item-qty');
@@ -160,48 +196,85 @@
             });
         });
 
-        // Build order, save to localStorage, show confirmation, then redirect
+        function showCheckout() {
+            const checked = document.querySelectorAll('.select-item:checked');
+            if (checked.length === 0) {
+                alert('Please select at least one item to place your order.');
+                return;
+            }
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
+        function hideCheckout() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        // Build the order object and save full details
         function placeOrder() {
             const checkboxes = document.querySelectorAll('.select-item:checked');
             if (checkboxes.length === 0) {
-                alert('Please select at least one item to place your order.');
+                alert('Please select at least one item.');
+                return;
+            }
+
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim();
+            const payment = document.getElementById('paymentMethod').value;
+            const tip = Number(document.getElementById('deliveryTip').value || 0);
+
+            if (!name || !phone || !address) {
+                alert('Please fill in your name, phone and address.');
                 return;
             }
 
             const items = [];
-            let total = 0;
+            let subtotal = 0;
 
             checkboxes.forEach(cb => {
                 const parent = cb.closest('.menu-item');
                 const qtyInput = parent.querySelector('.item-qty');
                 const qty = Math.max(1, parseInt(qtyInput.value) || 1);
                 const price = Number(cb.dataset.price);
-                const subtotal = price * qty;
-                total += subtotal;
+                const itemSubtotal = price * qty;
+                subtotal += itemSubtotal;
                 items.push({
                     name: cb.value,
                     img: cb.dataset.img,
                     price: price,
                     qty: qty,
-                    subtotal: subtotal
+                    subtotal: itemSubtotal
                 });
             });
 
-            // Order object with meta
+            const tax = Math.round(subtotal * 0.05); // 5% tax
+            const deliveryFee = subtotal > 499 ? 0 : 30; // small logic for delivery fee
+            const total = subtotal + tax + deliveryFee + tip;
+
             const order = {
                 id: 'ORD-' + Date.now(),
                 date: new Date().toISOString(),
+                customer: { name, phone, address },
+                paymentMethod: payment,
                 items: items,
-                total: total,
+                subtotal,
+                tax,
+                deliveryFee,
+                tip,
+                total,
                 status: 'Placed'
             };
 
+            // Save to an array of orders and to lastOrder
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.setItem('lastOrder', JSON.stringify(order));
 
-            // confirmation message then redirect to order-details page
+            // Confirmation and redirect to order-details
             const orderMessage = document.getElementById('orderMessage');
-            orderMessage.innerHTML = `Order placed!<br>Your order has been received.<br>Thank you!<br><small>Redirecting to order details...</small>`;
+            orderMessage.innerHTML = `Order placed!<br>Order ID: ${order.id}<br>Your order has been received. Redirecting...`;
             orderMessage.style.display = 'block';
+            document.getElementById('checkoutModal').style.display = 'none';
 
             setTimeout(() => {
                 window.location.href = 'order-details.html';
